@@ -1,0 +1,16 @@
+version: '3.3'
+
+services:
+  spring-jwt:
+    build: .
+    image: spring-jwt:v1
+    container_name: spring-jwt
+    command: java -jar /spring-jwt.war
+    ports:
+      - 8081:8081
+    deploy:
+      resources:
+        limits:
+          memory: 250m
+        reservations:
+          memory: 200m
