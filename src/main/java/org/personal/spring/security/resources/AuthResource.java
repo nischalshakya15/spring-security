@@ -3,7 +3,6 @@ package org.personal.spring.security.resources;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.personal.spring.security.config.UserPrincipal;
-import org.personal.spring.security.domain.User;
 import org.personal.spring.security.jwt.JwtTokenProvider;
 import org.personal.spring.security.models.AuthenticationRequest;
 import org.personal.spring.security.models.AuthenticationResponse;
@@ -32,7 +31,7 @@ public class AuthResource {
     private final UserRepository userRepository;
 
     @PostMapping
-    public ResponseEntity<?> authenticateUser(@RequestBody AuthenticationRequest authenticationRequest) {
+    public ResponseEntity<AuthenticationResponse> authenticateUser(@RequestBody AuthenticationRequest authenticationRequest) {
 
         log.info("Authenticating user {} ", authenticationRequest.getUserName());
 
@@ -43,13 +42,16 @@ public class AuthResource {
                 )
         );
 
-        log.info("Authentication {} ", authentication);
-
         SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        log.info("Generating token");
 
         String jwt = "Bearer " + jwtTokenProvider.generateToken(authentication);
 
-        User user = userRepository.findByUserName(((UserPrincipal) authentication.getPrincipal()).getUsername()).orElseThrow(() -> new UsernameNotFoundException("User doesn't exist"));
+        userRepository.findByUserName(((UserPrincipal) authentication.getPrincipal()).getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("User doesn't exist"));
+
+        log.info("Token generated");
 
         return ResponseEntity.ok(new AuthenticationResponse(jwt));
     }

@@ -24,16 +24,16 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "username", unique = true, length = 10)
+    @Column(name = "username", nullable = false, unique = true, length = 50)
     private String userName;
 
-    @Column(name = "password")
+    @Column(name = "password", nullable = false, length = 100)
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-            name = "user_authority",
+            name = "user_roles",
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "authority_name")})
-    private Set<Authority> authorities = new HashSet<>();
+            inverseJoinColumns = {@JoinColumn(name = "role_name", referencedColumnName = "name")})
+    private Set<Role> roles = new HashSet<>();
 }

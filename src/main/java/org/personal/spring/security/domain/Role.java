@@ -12,11 +12,11 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 @Entity
-@Table(name = "authority")
-public class Authority {
+@Table(name = "roles")
+public class Role {
 
     @Id
     @NotNull
-    @Column(name = "authority_name", length = 50)
-    private String authorityName;
+    @Column(name = "name", length = 50)
+    private String name;
 }

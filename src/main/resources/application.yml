@@ -15,10 +15,10 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
 
   liquibase:
-    enabled: false
+    change-log: classpath:liquibase/master.xml
 
 app:
   secretKey: JWTSuperSecretKey
