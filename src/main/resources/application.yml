@@ -25,6 +25,16 @@ spring:
       enabled: true
       path: /h2
 
+  thymeleaf:
+    cache: false
+    check-template: true
+    check-template-location: true
+    enabled: true
+    encoding: UTF-8
+    servlet:
+      content-type: text/html
+
+
 app:
   secretKey: JWTSuperSecretKey
   jwtExpireTimeInMS: 86400000
