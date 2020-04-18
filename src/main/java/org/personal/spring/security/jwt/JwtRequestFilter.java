@@ -27,7 +27,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        log.info("Verifying Token");
+        log.info("Verifying token");
         try {
             String jwt = getJwtFromRequest(request);
 

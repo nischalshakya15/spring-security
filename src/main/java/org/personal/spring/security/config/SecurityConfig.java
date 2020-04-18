@@ -6,6 +6,7 @@ import org.personal.spring.security.jwt.JwtRequestFilter;
 import org.personal.spring.security.service.CustomUserDetailService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -29,6 +30,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final CustomUserDetailService customUserDetailService;
 
     private final JwtAuthenticationEntryPoint unauthorizedHandler;
+
+    private static final String[] AUTH_WHITELIST = {
+            "/swagger-resources/**",
+            "/swagger-ui.html",
+            "/v2/api-docs",
+            "/webjars/**",
+            "/login"
+    };
+
+    public static final String BASE_URL = "/api";
 
     @Bean
     public JwtRequestFilter jwtAuthenticationFilter() {
@@ -60,10 +71,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/auth/**").permitAll()
+                .antMatchers(AUTH_WHITELIST).permitAll()
+                .antMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
                 .antMatchers("/h2/**").permitAll()
-                .antMatchers("/api/**").permitAll()
-                .anyRequest().permitAll();
+                .antMatchers("/api/**").authenticated();
 
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }

@@ -2,6 +2,7 @@ package org.personal.spring.security.resources;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.personal.spring.security.config.SecurityConfig;
 import org.personal.spring.security.domain.User;
 import org.personal.spring.security.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
@@ -19,10 +20,10 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(UserResource.BASE_URL)
+@RequestMapping(SecurityConfig.BASE_URL + UserResource.BASE_URL)
 public class UserResource {
 
-    final static String BASE_URL = "/api/users";
+    final static String BASE_URL = "/users";
 
     private final UserRepository userRepository;
 

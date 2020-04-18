@@ -19,10 +19,10 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
-    @Value("${app.secretKey}")
+    @Value("${spring-security.jwt.secret-key}")
     private String secretKey;
 
-    @Value("${app.jwtExpireTimeInMS}")
+    @Value("${spring-security.jwt.expiry-time}")
     private Long jwtExpireTimeInMS;
 
 
@@ -55,13 +55,13 @@ public class JwtTokenProvider {
         } catch (SignatureException ex) {
             log.error("Invalid JWT signature");
         } catch (MalformedJwtException ex) {
-            log.error("Invalid JWT token");
+            throw new MalformedJwtException(ex.getMessage());
         } catch (ExpiredJwtException ex) {
-            log.error("Expired JWT token");
+            throw new ExpiredJwtException(null, null, ex.getMessage());
         } catch (UnsupportedJwtException ex) {
-            log.error("Unsupported JWT token");
+            throw new UnsupportedOperationException(ex.getMessage());
         } catch (IllegalArgumentException ex) {
-            log.error("JWT claims string is empty.");
+            throw new IllegalArgumentException(ex.getMessage());
         }
         return false;
     }

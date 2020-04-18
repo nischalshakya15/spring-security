@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Spring - Auth</title>
+</head>
+<body>
+<form action="#" th:action="@{/}" th:object="${authenticatedRequest}" method="post">
+    <div>
+        <div>
+            <label for="userName">Username</label>
+            <input type="text" th:field="*{userName}" id="userName"/>
+        </div>
+        <div>
+            <label for="password">Password</label>
+            <input type="password" th:field="*{password}" id="password"/>
+        </div>
+        <div>
+            <input type="Submit"/>
+        </div>
+    </div>
+</form>
+</body>
+</html>
