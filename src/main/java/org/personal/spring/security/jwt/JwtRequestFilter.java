@@ -1,6 +1,7 @@
 package org.personal.spring.security.jwt;
 
 import lombok.extern.slf4j.Slf4j;
+import org.personal.spring.security.config.SecurityConfig;
 import org.personal.spring.security.service.CustomUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,24 +28,24 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        log.info("Verifying token");
-        try {
-            String jwt = getJwtFromRequest(request);
+        if (request.getRequestURI().startsWith(SecurityConfig.BASE_URL)) {
+            try {
+                String jwt = getJwtFromRequest(request);
 
-            if (StringUtils.hasText(jwt) && jwtTokenProvider.validateToken(jwt)) {
-                Long userId = jwtTokenProvider.getUserIdFromJWT(jwt);
+                if (StringUtils.hasText(jwt) && jwtTokenProvider.validateToken(jwt)) {
+                    Long userId = jwtTokenProvider.getUserIdFromJWT(jwt);
 
-                UserDetails userDetails = customUserDetailService.loadUserById(userId);
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    UserDetails userDetails = customUserDetailService.loadUserById(userId);
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
+            } catch (Exception ex) {
+                logger.error("Could not set user authentication in security context", ex);
             }
-        } catch (Exception ex) {
-            logger.error("Could not set user authentication in security context", ex);
+            filterChain.doFilter(request, response);
         }
-
-        filterChain.doFilter(request, response);
     }
 
     private String getJwtFromRequest(HttpServletRequest request) {
