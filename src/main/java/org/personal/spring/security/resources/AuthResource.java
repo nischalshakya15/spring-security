@@ -74,11 +74,12 @@ public class AuthResource {
     }
 
     @PostMapping("/authorize")
-    public ResponseEntity<String> authorizeUser(HttpServletRequest request) {
+    public ResponseEntity<UserPrincipal> authorizeUser(HttpServletRequest request) {
         String authorizationToken = request.getHeader("Authorization");
         if (authorizationToken == null) {
-            throw new JwtException("Token in empty");
+            throw new JwtException("Token is empty");
         }
-        return ResponseEntity.ok().body("Authorize success");
+        UserPrincipal userPrincipal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ResponseEntity.ok().body(userPrincipal);
     }
 }

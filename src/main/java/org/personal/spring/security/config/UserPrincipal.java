@@ -28,7 +28,7 @@ public class UserPrincipal implements UserDetails {
         this.password = password;
     }
 
-    public static UserPrincipal create(User user){
+    public static UserPrincipal create(User user) {
         final List<GrantedAuthority> authorities = user.getRoles().stream().map(role ->
                 new SimpleGrantedAuthority(role.getName())
         ).collect(Collectors.toList());
@@ -59,21 +59,25 @@ public class UserPrincipal implements UserDetails {
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonExpired() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonLocked() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isEnabled() {
         return true;
     }

@@ -15,3 +15,4 @@ spring:
 spring-security:
   client:
     redirect-url: ${REDIRECT_URL}
+    client-urls: ${CLIENT_URLS}

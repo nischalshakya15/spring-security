@@ -14,3 +14,4 @@ spring:
 spring-security:
   client:
     redirect-url: http://localhost:3000
+    client-urls: http://localhost:3000
