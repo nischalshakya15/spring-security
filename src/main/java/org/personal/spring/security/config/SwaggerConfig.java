@@ -51,8 +51,8 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
 
     private ApiInfo metaData() {
         return new ApiInfoBuilder()
-                .title("Spring Boot REST API")
-                .description("\"Spring Boot REST API spring-security\"")
+                .title("Spring security with JWT authentication")
+                .description("API endpoints")
                 .version("1.0.0")
                 .license("bigBrackets Pvt.Ltd.")
                 .licenseUrl("https://www.bigbrackets.tech")
