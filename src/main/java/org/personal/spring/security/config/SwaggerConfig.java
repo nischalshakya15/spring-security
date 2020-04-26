@@ -51,7 +51,7 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
 
     private ApiInfo metaData() {
         return new ApiInfoBuilder()
-                .title("Spring security with JWT authentication")
+                .title("Spring Security Authentication Module")
                 .description("API endpoints")
                 .version("1.0.0")
                 .license("bigBrackets Pvt.Ltd.")

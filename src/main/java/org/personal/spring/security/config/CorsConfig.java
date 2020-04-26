@@ -12,11 +12,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class CorsConfig implements WebMvcConfigurer {
 
     @Value("${spring-security.client.client-urls}")
-    private String[] clientUrls;
+    private String clientUrls;
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping(SecurityConfig.BASE_URL + "/**")
+        registry.addMapping("/**")
                 .allowedOrigins(clientUrls)
                 .allowedMethods("POST", "GET", "PUT", "OPTIONS", "DELETE")
                 .allowCredentials(false)

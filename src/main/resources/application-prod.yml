@@ -1,10 +1,14 @@
+server:
+  port: ${PORT}
+
 spring:
 
   profiles:
     active: prod
 
   datasource:
-    url: ${JDBC_URL}/${DATABASE}?${PARAM}
+    url: ${JDBC_URL}
+    driverClassName: ${DRIVER_CLASS}
     username: ${USERNAME}
     password: ${PASSWORD}
 
