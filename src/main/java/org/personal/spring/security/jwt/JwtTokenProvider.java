@@ -60,7 +60,6 @@ public class JwtTokenProvider {
             return true;
         } catch (SignatureException | MalformedJwtException | ExpiredJwtException | UnsupportedJwtException | IllegalArgumentException ex) {
             log.error("Token error {} ", ex.getLocalizedMessage());
-            handlerExceptionResolver.resolveException(request, response, null, ex);
         }
         return false;
     }

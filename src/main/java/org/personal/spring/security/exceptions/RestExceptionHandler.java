@@ -4,6 +4,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -34,6 +35,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(SignatureException.class)
+    @Order(2)
     protected ResponseEntity<ApiException> handleSignatureException(SignatureException signatureException) {
         ApiException apiException = new ApiException(HttpStatus.BAD_REQUEST, signatureException.getMessage(), signatureException);
         return buildResponseEntity(apiException);
