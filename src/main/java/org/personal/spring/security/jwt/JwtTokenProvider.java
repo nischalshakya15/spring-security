@@ -7,16 +7,19 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.personal.spring.security.config.UserPrincipal;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.util.Date;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class JwtTokenProvider {
 
     @Value("${spring-security.jwt.secret-key}")
@@ -25,6 +28,7 @@ public class JwtTokenProvider {
     @Value("${spring-security.jwt.expiry-time}")
     private Long jwtExpireTimeInMS;
 
+    private final HandlerExceptionResolver handlerExceptionResolver;
 
     public String generateToken(Authentication authentication) {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
@@ -54,10 +58,8 @@ public class JwtTokenProvider {
             return true;
         } catch (SignatureException ex) {
             log.error("Invalid JWT signature");
-        } catch (MalformedJwtException ex) {
-            throw new MalformedJwtException(ex.getMessage());
-        } catch (ExpiredJwtException ex) {
-            throw new ExpiredJwtException(null, null, ex.getMessage());
+        } catch (MalformedJwtException | ExpiredJwtException ex) {
+            log.error("error {} ", ex.getLocalizedMessage());
         } catch (UnsupportedJwtException ex) {
             throw new UnsupportedOperationException(ex.getMessage());
         } catch (IllegalArgumentException ex) {
