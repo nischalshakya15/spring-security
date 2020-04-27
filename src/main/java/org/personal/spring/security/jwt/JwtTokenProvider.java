@@ -15,6 +15,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 
 @Slf4j
@@ -52,18 +54,13 @@ public class JwtTokenProvider {
         return Long.parseLong(claims.getSubject());
     }
 
-    public boolean validateToken(String authToken) {
+    public boolean validateToken(String accessToken, HttpServletRequest request, HttpServletResponse response) {
         try {
-            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(authToken);
+            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(accessToken);
             return true;
-        } catch (SignatureException ex) {
-            log.error("Invalid JWT signature");
-        } catch (MalformedJwtException | ExpiredJwtException ex) {
-            log.error("error {} ", ex.getLocalizedMessage());
-        } catch (UnsupportedJwtException ex) {
-            throw new UnsupportedOperationException(ex.getMessage());
-        } catch (IllegalArgumentException ex) {
-            throw new IllegalArgumentException(ex.getMessage());
+        } catch (SignatureException | MalformedJwtException | ExpiredJwtException | UnsupportedJwtException | IllegalArgumentException ex) {
+            log.error("Token error {} ", ex.getLocalizedMessage());
+            handlerExceptionResolver.resolveException(request, response, null, ex);
         }
         return false;
     }
