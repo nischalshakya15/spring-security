@@ -21,7 +21,7 @@ spring:
 spring-security:
   jwt:
     secret-key: JWTSuperSecretKey
-    expiry-time: 86400000
+    expiry-time: 10000
   swagger:
     base-package: org.personal.spring.security
     base-path: "/api.*"
