@@ -12,7 +12,6 @@ import org.personal.spring.security.config.UserPrincipal;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.util.Date;
 
@@ -26,8 +25,6 @@ public class JwtTokenProvider {
 
     @Value("${spring-security.jwt.expiry-time}")
     private Long jwtExpireTimeInMS;
-
-    private final HandlerExceptionResolver handlerExceptionResolver;
 
     public String generateToken(Authentication authentication) {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
