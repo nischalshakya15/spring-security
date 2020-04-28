@@ -1,6 +1,7 @@
 package org.personal.spring.security.exceptions;
 
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
@@ -16,9 +17,21 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
+    @ExceptionHandler(Exception.class)
+    protected ResponseEntity<ApiException> handleException(Exception exception) {
+        ApiException apiException = new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage(), exception);
+        return buildResponseEntity(apiException);
+    }
+
     @ExceptionHandler(AuthenticationException.class)
     protected ResponseEntity<ApiException> handleAuthenticationException(AuthenticationException authenticationException) {
         ApiException apiException = new ApiException(HttpStatus.BAD_REQUEST, authenticationException.getMessage(), authenticationException);
+        return buildResponseEntity(apiException);
+    }
+
+    @ExceptionHandler(JwtException.class)
+    protected ResponseEntity<ApiException> handleJwtException(JwtException jwtException) {
+        ApiException apiException = new ApiException(HttpStatus.BAD_REQUEST, jwtException.getMessage(), jwtException);
         return buildResponseEntity(apiException);
     }
 
