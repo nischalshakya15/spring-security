@@ -6,7 +6,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
-import io.jsonwebtoken.UnsupportedJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.personal.spring.security.config.UserPrincipal;
@@ -54,14 +53,10 @@ public class JwtTokenProvider {
         return Long.parseLong(claims.getSubject());
     }
 
-    public boolean validateToken(String accessToken, HttpServletRequest request, HttpServletResponse response) {
-        try {
-            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(accessToken);
-            return true;
-        } catch (SignatureException | MalformedJwtException | ExpiredJwtException | UnsupportedJwtException | IllegalArgumentException ex) {
-            log.error("Token error {} ", ex.getLocalizedMessage());
-        }
-        return false;
+    public boolean validateToken(String accessToken, HttpServletRequest request, HttpServletResponse response)
+            throws SignatureException, MalformedJwtException, ExpiredJwtException, UnsupportedOperationException, IllegalArgumentException {
+        Jwts.parser().setSigningKey(secretKey).parseClaimsJws(accessToken);
+        return true;
     }
 
 }
