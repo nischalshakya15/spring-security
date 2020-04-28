@@ -14,8 +14,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 
 @Slf4j
@@ -53,7 +51,7 @@ public class JwtTokenProvider {
         return Long.parseLong(claims.getSubject());
     }
 
-    public boolean validateToken(String accessToken, HttpServletRequest request, HttpServletResponse response)
+    public boolean validateToken(String accessToken)
             throws SignatureException, MalformedJwtException, ExpiredJwtException, UnsupportedOperationException, IllegalArgumentException {
         Jwts.parser().setSigningKey(secretKey).parseClaimsJws(accessToken);
         return true;

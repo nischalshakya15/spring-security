@@ -33,7 +33,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             String jwt = getJwtFromRequest(request);
-            if (StringUtils.hasText(jwt) && jwtTokenProvider.validateToken(jwt, request, response)) {
+            if (StringUtils.hasText(jwt) && jwtTokenProvider.validateToken(jwt)) {
                 Long userId = jwtTokenProvider.getUserIdFromJWT(jwt);
                 log.info("Verifying token");
 
@@ -46,9 +46,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             }
             filterChain.doFilter(request, response);
         } catch (Exception ex) {
-            logger.error("Could not set user authentication in security context", ex);
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
             handlerExceptionResolver.resolveException(request, response, null, ex);
         }
     }
