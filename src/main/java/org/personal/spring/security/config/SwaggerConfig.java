@@ -54,8 +54,6 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
                 .title("Spring Security Authentication Module")
                 .description("API endpoints")
                 .version("1.0.0")
-                .license("bigBrackets Pvt.Ltd.")
-                .licenseUrl("https://www.bigbrackets.tech")
                 .build();
     }
 

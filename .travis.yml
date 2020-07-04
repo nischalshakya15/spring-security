@@ -1,0 +1,19 @@
+branches:
+  only:
+    - master
+git:
+  depth: false
+
+matrix:
+  include:
+    - name: salesmgmt
+      language: java
+      script:
+        - ./mvnw clean install -Pprod package
+
+deploy:
+  provider: heroku
+  app: spring-authentication-module
+  api_key: "ffc0c6f4-ff7b-4180-8585-328737a3d4e2"
+  skip_cleanup: true
+  on: master
