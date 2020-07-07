@@ -18,10 +18,15 @@ spring:
     servlet:
       content-type: text/html
 
+jwt:
+  refreshToken:
+    expiresIn: 172800000
+    secretKey: bZnoIcVsWCM7HvjTSMaNJ26SPsXBMU5pHzu8NxWIU1XkxCw1vn
+  accessToken:
+    expiresIn: 86400000
+    secretKey: ulll60BDXyO3OoGHuaRikY4ESOgXnrEotljOc4uJEI1ZZWlsKr
+
 spring-security:
-  jwt:
-    secret-key: JWTSuperSecretKey
-    expiry-time: 8640000
   swagger:
     base-package: org.personal.spring.security
     base-path: "/api.*"

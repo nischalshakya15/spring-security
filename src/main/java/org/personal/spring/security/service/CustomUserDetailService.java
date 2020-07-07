@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.personal.spring.security.config.UserPrincipal;
 import org.personal.spring.security.domain.User;
 import org.personal.spring.security.repository.UserRepository;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -28,6 +29,11 @@ public class CustomUserDetailService implements UserDetailsService {
                 () -> new UsernameNotFoundException("User not found with id : " + id)
         );
         return UserPrincipal.create(user);
+    }
+
+    public UsernamePasswordAuthenticationToken getAuthentication(Long id){
+        UserDetails userDetails = loadUserById(id);
+        return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 
 }

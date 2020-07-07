@@ -1,11 +1,20 @@
 package org.personal.spring.security.models;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
 public class AuthenticationResponse implements Serializable {
 
-    private final String accessToken;
+    private String accessToken;
+
+    private String refreshToken;
+
+    public AuthenticationResponse() {
+    }
 }

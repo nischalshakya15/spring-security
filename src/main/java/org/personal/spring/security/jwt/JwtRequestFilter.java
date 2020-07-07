@@ -33,8 +33,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             String jwt = getJwtFromRequest(request);
-            if (StringUtils.hasText(jwt) && jwtTokenProvider.validateToken(jwt)) {
-                Long userId = jwtTokenProvider.getUserIdFromJWT(jwt);
+            if (StringUtils.hasText(jwt) && jwtTokenProvider.validateAccessToken(jwt)) {
+                Long userId = jwtTokenProvider.getUserIdFromAccessToken(jwt);
                 log.info("Verifying token");
 
                 UserDetails userDetails = customUserDetailService.loadUserById(userId);

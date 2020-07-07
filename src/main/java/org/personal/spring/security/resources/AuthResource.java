@@ -5,10 +5,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.personal.spring.security.config.SecurityConfig;
 import org.personal.spring.security.config.UserPrincipal;
+import org.personal.spring.security.domain.User;
 import org.personal.spring.security.jwt.JwtTokenProvider;
 import org.personal.spring.security.models.AuthenticationRequest;
 import org.personal.spring.security.models.AuthenticationResponse;
 import org.personal.spring.security.repository.UserRepository;
+import org.personal.spring.security.service.CustomUserDetailService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,15 +18,19 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -40,8 +46,7 @@ public class AuthResource {
 
     private final UserRepository userRepository;
 
-    @Value("${spring-security.client.redirect-url}")
-    private String redirectUrl;
+    private final CustomUserDetailService customUserDetailService;
 
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticateUser(AuthenticationRequest authenticationRequest,
@@ -57,20 +62,32 @@ public class AuthResource {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        String jwt = jwtTokenProvider.generateToken(authentication);
-
-        Cookie accessToken = new Cookie("accessToken", jwt);
-        accessToken.setMaxAge(86400000);
-        accessToken.setPath("/");
-        response.addCookie(accessToken);
+        String accessToken = "Bearer " + jwtTokenProvider.generateAccessToken(authentication);
+        String refreshToken = jwtTokenProvider.generateRefreshToken(authentication);
 
         userRepository.findByUserName(((UserPrincipal) authentication.getPrincipal()).getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException("User doesn't exist"));
 
-        model.addAttribute("authenticatedRequest", new AuthenticationRequest());
+        return ResponseEntity.ok().body(new AuthenticationResponse(accessToken, refreshToken));
+    }
 
-        return ResponseEntity.ok().body(new AuthenticationResponse(jwt));
+    @PostMapping("/generateAccessToken")
+    public ResponseEntity<Map<String, String>> generateAccessToken(HttpServletRequest request, @RequestBody AuthenticationResponse authenticationResponse) {
+        final Map<String, String> accessTokenMap = new HashMap<>();
+        boolean isRefreshTokenValid = jwtTokenProvider.validateRefreshToken(authenticationResponse.getRefreshToken());
+        if (isRefreshTokenValid) {
+            Long id = jwtTokenProvider.getUserIdFromRefreshToken(authenticationResponse.getRefreshToken());
+            Optional<User> user = userRepository.findById(id);
+            if (user.isPresent()) {
+                UsernamePasswordAuthenticationToken authentication = customUserDetailService.getAuthentication(id);
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                String token = "Bearer " + jwtTokenProvider.generateAccessToken(authentication);
+                accessTokenMap.put("accessToken", token);
+            }
+        }
+        return ResponseEntity.ok().body(accessTokenMap);
     }
 
     @PostMapping("/authorize")
