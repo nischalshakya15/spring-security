@@ -11,7 +11,6 @@ import org.personal.spring.security.models.AuthenticationRequest;
 import org.personal.spring.security.models.AuthenticationResponse;
 import org.personal.spring.security.repository.UserRepository;
 import org.personal.spring.security.service.CustomUserDetailService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -49,8 +48,7 @@ public class AuthResource {
     private final CustomUserDetailService customUserDetailService;
 
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponse> authenticateUser(AuthenticationRequest authenticationRequest,
-                                                                   HttpServletResponse response, Model model) throws IOException {
+    public ResponseEntity<AuthenticationResponse> authenticateUser(@RequestBody AuthenticationRequest authenticationRequest) {
         log.info("Authenticating user {} ", authenticationRequest.toString());
 
         Authentication authentication = authenticationManager.authenticate(
@@ -71,7 +69,7 @@ public class AuthResource {
         return ResponseEntity.ok().body(new AuthenticationResponse(accessToken, refreshToken));
     }
 
-    @PostMapping("/generateAccessToken")
+    @PostMapping("/generate-access-token")
     public ResponseEntity<Map<String, String>> generateAccessToken(HttpServletRequest request, @RequestBody AuthenticationResponse authenticationResponse) {
         final Map<String, String> accessTokenMap = new HashMap<>();
         boolean isRefreshTokenValid = jwtTokenProvider.validateRefreshToken(authenticationResponse.getRefreshToken());
